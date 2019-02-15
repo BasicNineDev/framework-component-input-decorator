@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {User} from './models/user.model';
 
 @Component({
   selector: 'app-root',
@@ -6,26 +7,54 @@ import { Component } from '@angular/core';
     <!--The content below is only a placeholder and can be replaced.-->
     <div style="text-align:center">
       <h1>
-        Welcome to {{title}}!
+         {{title}}!
       </h1>
-      <img width="300" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
     </div>
-    <h2>Here are some links to help you start: </h2>
-    <ul>
-      <li>
-        <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-      </li>
-      <li>
-        <h2><a target="_blank" rel="noopener" href="https://angular.io/cli">CLI Documentation</a></h2>
-      </li>
-      <li>
-        <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-      </li>
-    </ul>
-    
+    <div class="container">
+      <div class="row">
+        <div class="form-inline">
+          <div class="for-group" style="margin: 30px 0">
+            <label for="name">Name:</label>
+            <input #name type="text" id="name"
+                   class="form-control"
+                   placeholder="이름을 입력하세요.">
+            <label for="role">Role:</label>
+            <select #role id="role" class="form-control">
+              <option>관리자</option>
+              <option>개발자</option>
+              <option>디자이너</option>
+            </select>
+            <button type="button"
+                    class="btn btn-default"
+                    (click)="addUser(name.value, role.value)">사용자 추가</button>
+          </div>
+          <app-user-list [users]="users"></app-user-list>
+        </div>
+      </div>
+    </div>
   `,
   styles: []
 })
 export class AppComponent {
   title = 'component-interaction';
+
+  users: User[];
+
+  constructor() {
+    this.users = [
+      new User(1, 'Lee', '관리자'),
+      new User(2, 'Baek', '개발자'),
+      new User(3, 'Park', '디자이너')
+    ];
+  }
+
+  addUser(name: string, role: string) {
+    if (name && role) {
+      this.users = [...this.users, new User(this.getNextId(), name, role)];
+    }
+  }
+
+  getNextId(): number {
+    return this.users.length ? Math.max(...this.users.map(({ id }) => id)) + 1 : 1;
+  }
 }
